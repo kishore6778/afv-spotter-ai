@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Upload, Camera, Target, Loader2, Shield } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Upload, Camera, Target, Loader2, Shield, Webhook } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -10,6 +12,7 @@ const DetectionInterface = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [useWebcam, setUseWebcam] = useState(false);
+  const [n8nWebhookUrl, setN8nWebhookUrl] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +64,37 @@ const DetectionInterface = () => {
     }
   };
 
+  const triggerN8nWebhook = async (analysisData: string) => {
+    if (!n8nWebhookUrl) return;
+
+    try {
+      await fetch(n8nWebhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "no-cors",
+        body: JSON.stringify({
+          timestamp: new Date().toISOString(),
+          analysis: analysisData,
+          image: selectedImage?.substring(0, 100) + "...", // Send truncated image data
+        }),
+      });
+
+      toast({
+        title: "n8n Webhook Triggered",
+        description: "Analysis data sent to n8n workflow successfully.",
+      });
+    } catch (error) {
+      console.error("n8n webhook error:", error);
+      toast({
+        title: "Webhook Failed",
+        description: "Failed to send data to n8n. Check your webhook URL.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const analyzeImage = async () => {
     if (!selectedImage) return;
 
@@ -77,6 +111,11 @@ const DetectionInterface = () => {
         title: "Analysis Complete",
         description: "Target detection analysis finished successfully.",
       });
+
+      // Trigger n8n webhook if configured
+      if (n8nWebhookUrl) {
+        await triggerN8nWebhook(data.analysis);
+      }
     } catch (error) {
       toast({
         title: "Analysis Failed",
@@ -104,6 +143,21 @@ const DetectionInterface = () => {
             <h3 className="text-xl font-bold text-foreground mb-4 font-mono">INPUT</h3>
             
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="n8n-webhook" className="text-sm font-mono flex items-center gap-2">
+                  <Webhook className="w-4 h-4" />
+                  n8n Webhook URL (Optional)
+                </Label>
+                <Input
+                  id="n8n-webhook"
+                  type="url"
+                  placeholder="https://your-n8n-instance.com/webhook/..."
+                  value={n8nWebhookUrl}
+                  onChange={(e) => setN8nWebhookUrl(e.target.value)}
+                  className="font-mono text-sm"
+                />
+              </div>
+
               <input
                 type="file"
                 ref={fileInputRef}
