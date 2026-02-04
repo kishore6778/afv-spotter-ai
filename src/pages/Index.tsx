@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import EnhancedFeatures from "@/components/EnhancedFeatures";
 import DetectionInterface from "@/components/DetectionInterface";
+import VideoAnalysis from "@/components/VideoAnalysis";
+import Dashboard from "@/components/Dashboard";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,7 +26,10 @@ const Index = () => {
 
       <Hero />
       <Features />
+      <EnhancedFeatures />
       <DetectionInterface />
+      <VideoAnalysis />
+      <Dashboard />
       
       <footer className="py-8 border-t border-border">
         <div className="container mx-auto px-4 text-center">

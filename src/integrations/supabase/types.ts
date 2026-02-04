@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      detection_logs: {
+        Row: {
+          analysis_result: string
+          confidence_score: number | null
+          created_at: string
+          detected_objects: Json | null
+          id: string
+          image_thumbnail: string | null
+          metadata: Json | null
+          processing_time_ms: number | null
+          session_id: string
+          source_type: string
+          threat_level: string
+        }
+        Insert: {
+          analysis_result: string
+          confidence_score?: number | null
+          created_at?: string
+          detected_objects?: Json | null
+          id?: string
+          image_thumbnail?: string | null
+          metadata?: Json | null
+          processing_time_ms?: number | null
+          session_id?: string
+          source_type?: string
+          threat_level?: string
+        }
+        Update: {
+          analysis_result?: string
+          confidence_score?: number | null
+          created_at?: string
+          detected_objects?: Json | null
+          id?: string
+          image_thumbnail?: string | null
+          metadata?: Json | null
+          processing_time_ms?: number | null
+          session_id?: string
+          source_type?: string
+          threat_level?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

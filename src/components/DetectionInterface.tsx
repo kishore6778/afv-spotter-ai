@@ -99,6 +99,8 @@ const DetectionInterface = () => {
     if (!selectedImage) return;
 
     setIsAnalyzing(true);
+    const startTime = performance.now();
+    
     try {
       const { data, error } = await supabase.functions.invoke('analyze-target', {
         body: { imageData: selectedImage }
@@ -106,7 +108,21 @@ const DetectionInterface = () => {
 
       if (error) throw error;
 
+      const processingTime = Math.round(performance.now() - startTime);
       setAnalysis(data.analysis);
+
+      // Log to database
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await supabase.from('detection_logs').insert([{
+        analysis_result: data.analysis,
+        threat_level: extractThreatLevel(data.analysis),
+        detected_objects: [],
+        confidence_score: extractConfidence(data.analysis),
+        processing_time_ms: processingTime,
+        source_type: 'image',
+        image_thumbnail: selectedImage.substring(0, 500)
+      }] as any);
+
       toast({
         title: "Analysis Complete",
         description: "Target detection analysis finished successfully.",
@@ -125,6 +141,16 @@ const DetectionInterface = () => {
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const extractThreatLevel = (analysis: string): string => {
+    const match = analysis.match(/Primary Threat Level:\s*(\w+)/i);
+    return match ? match[1].toLowerCase() : 'unknown';
+  };
+
+  const extractConfidence = (analysis: string): number => {
+    const match = analysis.match(/Processing Confidence:\s*(\d+)/i);
+    return match ? parseInt(match[1]) : 0;
   };
 
   return (
