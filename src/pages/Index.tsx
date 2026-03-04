@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText } from "lucide-react";
+import { FileText, Presentation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Hero from "@/components/Hero";
