@@ -48,7 +48,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="absolute top-4 right-4 z-50">
+      <div className="absolute top-4 right-4 z-50 flex gap-2">
+        <Button 
+          onClick={() => navigate('/presentation')}
+          variant="outline"
+          className="gap-2 font-mono"
+        >
+          <Presentation className="w-4 h-4" />
+          PPT
+        </Button>
         <Button 
           onClick={() => navigate('/documentation')}
           variant="outline"
