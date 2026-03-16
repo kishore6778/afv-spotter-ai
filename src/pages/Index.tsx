@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import VideoDetection from "@/components/VideoDetection";
+import ImageDetection from "@/components/ImageDetection";
 import AnalysisReportView from "@/components/AnalysisReport";
 import Dashboard from "@/components/Dashboard";
 
@@ -40,7 +41,6 @@ const Index = () => {
   const handleReportGenerated = (newReport: AnalysisReport, frames: string[]) => {
     setReport(newReport);
     setFrameCaptures(frames);
-    // Scroll to report
     setTimeout(() => {
       document.getElementById('report')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
@@ -70,6 +70,7 @@ const Index = () => {
       <Hero />
       <Features />
       <VideoDetection onReportGenerated={handleReportGenerated} />
+      <ImageDetection onReportGenerated={handleReportGenerated} />
       {report && <AnalysisReportView report={report} frameCaptures={frameCaptures} />}
       <Dashboard />
       

@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Play, Pause, SkipForward, Loader2, Crosshair, AlertTriangle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Upload, Play, Pause, SkipForward, Loader2, Crosshair, AlertTriangle, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -66,6 +67,8 @@ const VideoDetection = ({ onReportGenerated }: VideoDetectionProps) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [analysisComplete, setAnalysisComplete] = useState(false);
+  const [telegramChatId, setTelegramChatId] = useState("");
+  const [isSendingAlert, setIsSendingAlert] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -422,6 +425,56 @@ const VideoDetection = ({ onReportGenerated }: VideoDetectionProps) => {
                       )}
                     </Button>
                   )}
+                </div>
+              )}
+
+              {/* Telegram Alert */}
+              {analysisComplete && allFrameDetections.some(f => f.detections.length > 0) && (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Telegram Chat ID"
+                    value={telegramChatId}
+                    onChange={(e) => setTelegramChatId(e.target.value)}
+                    className="flex-1 font-mono text-sm"
+                  />
+                  <Button
+                    onClick={async () => {
+                      if (!telegramChatId) {
+                        toast({ title: "Chat ID Required", description: "Enter your Telegram Chat ID.", variant: "destructive" });
+                        return;
+                      }
+                      setIsSendingAlert(true);
+                      const allDets = allFrameDetections.flatMap(f => f.detections);
+                      const maxThreat = allDets.reduce((max, d) => {
+                        const levels: Record<string, number> = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1, NONE: 0 };
+                        return (levels[d.threat_level] || 0) > (levels[max] || 0) ? d.threat_level : max;
+                      }, 'NONE');
+                      const keyFrame = allFrameDetections.find(f => f.detections.length > 0);
+                      try {
+                        await supabase.functions.invoke('send-telegram-alert', {
+                          body: {
+                            chat_id: telegramChatId,
+                            threat_level: maxThreat,
+                            detections: allDets.slice(0, 10),
+                            scene_summary: keyFrame?.sceneSummary || sceneSummary,
+                            image_base64: keyFrame?.frameDataUrl || null,
+                            source_type: 'video'
+                          }
+                        });
+                        toast({ title: "Alert Sent ✅", description: "Threat notification sent to Telegram." });
+                      } catch (err) {
+                        toast({ title: "Alert Failed", description: err instanceof Error ? err.message : "Failed to send alert", variant: "destructive" });
+                      } finally {
+                        setIsSendingAlert(false);
+                      }
+                    }}
+                    disabled={isSendingAlert || !telegramChatId}
+                    variant="secondary"
+                    className="gap-2"
+                  >
+                    {isSendingAlert ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    Send Alert
+                  </Button>
                 </div>
               )}
 
