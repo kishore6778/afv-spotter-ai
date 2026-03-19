@@ -121,8 +121,8 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
         console.error("Logging error:", e);
       }
 
-      // Auto-send Telegram alert if threats found and chat_id configured
-      if (newDetections.length > 0 && telegramChatId) {
+      // Auto-send Telegram alert if HIGH or CRITICAL threat detected
+      if (newDetections.length > 0 && (maxThreat === 'CRITICAL' || maxThreat === 'HIGH')) {
         sendTelegramAlert(newDetections, data.scene_summary || "", maxThreat);
       }
 
