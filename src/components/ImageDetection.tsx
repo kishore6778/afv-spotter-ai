@@ -164,7 +164,7 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
     try {
       const { data, error } = await supabase.functions.invoke('send-telegram-alert', {
         body: {
-          chat_id: telegramChatId,
+          chat_id: TELEGRAM_CHAT_ID,
           threat_level: alertThreat,
           detections: alertDetections,
           scene_summary: alertSummary,
