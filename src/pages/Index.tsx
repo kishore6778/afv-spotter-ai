@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import VideoDetection from "@/components/VideoDetection";
-import ImageDetection from "@/components/ImageDetection";
+import DetectionTabs from "@/components/DetectionTabs";
 import AnalysisReportView from "@/components/AnalysisReport";
 import Dashboard from "@/components/Dashboard";
 
