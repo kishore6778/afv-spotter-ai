@@ -324,31 +324,6 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
                   )}
                 </div>
               )}
-
-              {/* Telegram Alert */}
-              {analysisComplete && detections.length > 0 && (
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Telegram Chat ID"
-                    value={telegramChatId}
-                    onChange={(e) => setTelegramChatId(e.target.value)}
-                    className="flex-1 font-mono text-sm"
-                  />
-                  <Button
-                    onClick={() => sendTelegramAlert()}
-                    disabled={isSendingAlert || !telegramChatId}
-                    variant="secondary"
-                    className="gap-2"
-                  >
-                    {isSendingAlert ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Send className="w-4 h-4" />
-                    )}
-                    Send Alert
-                  </Button>
-                </div>
-              )}
             </div>
           </Card>
 
