@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Upload, Loader2, Crosshair, AlertTriangle, SkipForward, Send, Image as ImageIcon } from "lucide-react";
+
+import { Upload, Loader2, Crosshair, AlertTriangle, SkipForward, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -55,9 +55,10 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
   const [detections, setDetections] = useState<Detection[]>([]);
   const [sceneSummary, setSceneSummary] = useState("");
   const [analysisComplete, setAnalysisComplete] = useState(false);
-  const [telegramChatId, setTelegramChatId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const TELEGRAM_CHAT_ID = "7532156587";
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -119,8 +120,8 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
         console.error("Logging error:", e);
       }
 
-      // Auto-send Telegram alert if threats found and chat_id configured
-      if (newDetections.length > 0 && telegramChatId) {
+      // Auto-send Telegram alert if HIGH or CRITICAL threat detected
+      if (newDetections.length > 0 && (maxThreat === 'CRITICAL' || maxThreat === 'HIGH')) {
         sendTelegramAlert(newDetections, data.scene_summary || "", maxThreat);
       }
 
@@ -158,16 +159,11 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
       return (levels[d.threat_level] || 0) > (levels[max] || 0) ? d.threat_level : max;
     }, 'NONE');
 
-    if (!telegramChatId) {
-      toast({ title: "Telegram Chat ID Required", description: "Enter your Telegram Chat ID to receive alerts.", variant: "destructive" });
-      return;
-    }
-
     setIsSendingAlert(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-telegram-alert', {
         body: {
-          chat_id: telegramChatId,
+          chat_id: TELEGRAM_CHAT_ID,
           threat_level: alertThreat,
           detections: alertDetections,
           scene_summary: alertSummary,
@@ -201,15 +197,8 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
   };
 
   return (
-    <section className="py-20 bg-tactical-dark/30" id="image-detection">
+    <div id="image-detection">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4">
-            <ImageIcon className="inline w-8 h-8 mr-2 text-tactical-amber" />
-            IMAGE DETECTION INTERFACE
-          </h2>
-          <p className="text-muted-foreground font-mono">Upload an image for AI-powered threat detection with visual overlays</p>
-        </div>
 
         <div className="grid lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {/* Image Viewer with Overlay */}
@@ -334,31 +323,6 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
                   )}
                 </div>
               )}
-
-              {/* Telegram Alert */}
-              {analysisComplete && detections.length > 0 && (
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Telegram Chat ID"
-                    value={telegramChatId}
-                    onChange={(e) => setTelegramChatId(e.target.value)}
-                    className="flex-1 font-mono text-sm"
-                  />
-                  <Button
-                    onClick={() => sendTelegramAlert()}
-                    disabled={isSendingAlert || !telegramChatId}
-                    variant="secondary"
-                    className="gap-2"
-                  >
-                    {isSendingAlert ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Send className="w-4 h-4" />
-                    )}
-                    Send Alert
-                  </Button>
-                </div>
-              )}
             </div>
           </Card>
 
@@ -427,7 +391,7 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
           </Card>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
