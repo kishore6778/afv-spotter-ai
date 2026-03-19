@@ -195,6 +195,29 @@ const VideoDetection = ({ onReportGenerated }: VideoDetectionProps) => {
       console.error("Logging error:", e);
     }
 
+    // Auto-send Telegram alert if HIGH or CRITICAL threat detected
+    if (allDetections.length > 0 && (maxThreat === 'CRITICAL' || maxThreat === 'HIGH')) {
+      const keyFrame = frameDetections.find(f => f.detections.length > 0);
+      setIsSendingAlert(true);
+      try {
+        await supabase.functions.invoke('send-telegram-alert', {
+          body: {
+            chat_id: TELEGRAM_CHAT_ID,
+            threat_level: maxThreat,
+            detections: allDetections.slice(0, 10),
+            scene_summary: keyFrame?.sceneSummary || "",
+            image_base64: keyFrame?.frameDataUrl || null,
+            source_type: 'video'
+          }
+        });
+        toast({ title: "Alert Sent ✅", description: "Threat notification automatically sent to Telegram." });
+      } catch (err) {
+        toast({ title: "Alert Failed", description: err instanceof Error ? err.message : "Failed to send alert", variant: "destructive" });
+      } finally {
+        setIsSendingAlert(false);
+      }
+    }
+
     toast({ title: "Analysis Complete", description: `Analyzed ${frameDetections.length} frames. Generate report for detailed findings.` });
   };
 
