@@ -68,8 +68,7 @@ const Index = () => {
 
       <Hero />
       <Features />
-      <VideoDetection onReportGenerated={handleReportGenerated} />
-      <ImageDetection onReportGenerated={handleReportGenerated} />
+      <DetectionTabs onReportGenerated={handleReportGenerated} />
       {report && <AnalysisReportView report={report} frameCaptures={frameCaptures} />}
       <Dashboard />
       
