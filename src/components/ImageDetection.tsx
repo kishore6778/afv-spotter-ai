@@ -59,7 +59,6 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
   const { toast } = useToast();
 
   const TELEGRAM_CHAT_ID = "7532156587";
-  const { toast } = useToast();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
