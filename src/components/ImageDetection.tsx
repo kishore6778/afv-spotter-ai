@@ -198,15 +198,8 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
   };
 
   return (
-    <section className="py-20 bg-tactical-dark/30" id="image-detection">
+    <div id="image-detection">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4">
-            <ImageIcon className="inline w-8 h-8 mr-2 text-tactical-amber" />
-            IMAGE DETECTION INTERFACE
-          </h2>
-          <p className="text-muted-foreground font-mono">Upload an image for AI-powered threat detection with visual overlays</p>
-        </div>
 
         <div className="grid lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {/* Image Viewer with Overlay */}
