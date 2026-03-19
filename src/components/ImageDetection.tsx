@@ -55,8 +55,10 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
   const [detections, setDetections] = useState<Detection[]>([]);
   const [sceneSummary, setSceneSummary] = useState("");
   const [analysisComplete, setAnalysisComplete] = useState(false);
-  const [telegramChatId, setTelegramChatId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const TELEGRAM_CHAT_ID = "7532156587";
   const { toast } = useToast();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
