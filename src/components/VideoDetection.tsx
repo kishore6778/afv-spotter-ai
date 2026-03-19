@@ -67,7 +67,9 @@ const VideoDetection = ({ onReportGenerated }: VideoDetectionProps) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [analysisComplete, setAnalysisComplete] = useState(false);
-  const [telegramChatId, setTelegramChatId] = useState("");
+  const [isSendingAlert, setIsSendingAlert] = useState(false);
+
+  const TELEGRAM_CHAT_ID = "7532156587";
   const [isSendingAlert, setIsSendingAlert] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
