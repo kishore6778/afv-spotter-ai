@@ -160,11 +160,6 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
       return (levels[d.threat_level] || 0) > (levels[max] || 0) ? d.threat_level : max;
     }, 'NONE');
 
-    if (!telegramChatId) {
-      toast({ title: "Telegram Chat ID Required", description: "Enter your Telegram Chat ID to receive alerts.", variant: "destructive" });
-      return;
-    }
-
     setIsSendingAlert(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-telegram-alert', {
