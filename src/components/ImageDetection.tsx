@@ -392,7 +392,7 @@ const ImageDetection = ({ onReportGenerated }: ImageDetectionProps) => {
           </Card>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
