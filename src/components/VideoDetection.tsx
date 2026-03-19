@@ -561,7 +561,7 @@ const VideoDetection = ({ onReportGenerated }: VideoDetectionProps) => {
           </Card>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
