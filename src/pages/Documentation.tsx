@@ -54,12 +54,12 @@ const Documentation = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-foreground mb-2 font-mono">Backend & AI</h3>
+              <h3 className="font-bold text-foreground mb-2 font-mono">Backend</h3>
               <ul className="space-y-1 text-muted-foreground text-sm">
-                <li>• Lovable Cloud (Supabase) - Backend Infrastructure</li>
-                <li>• Google Gemini 2.5 Flash - AI Vision Model</li>
+                <li>• Supabase - Backend Infrastructure & Database</li>
+                <li>• YOLOv8 - Object Detection Model</li>
                 <li>• Edge Functions - Serverless Processing</li>
-                <li>• n8n Integration - Workflow Automation</li>
+                <li>• n8n Workflow - Automation & Integration</li>
               </ul>
             </div>
           </div>
