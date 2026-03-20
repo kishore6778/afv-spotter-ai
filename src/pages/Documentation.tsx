@@ -82,8 +82,8 @@ const Documentation = () => {
             <div>
               <h3 className="font-bold text-foreground mb-2 font-mono">2. AI Processing Layer</h3>
               <p className="text-sm">
-                Utilizes Google's Gemini 2.5 Flash model via Lovable AI Gateway for advanced computer vision 
-                analysis. The model is specifically prompted for military target detection with focus on:
+                Utilizes a custom-trained YOLOv8 object detection model deployed via Edge Functions for advanced 
+                computer vision analysis. The model is specifically trained for military target detection with focus on:
               </p>
               <ul className="text-sm ml-4 mt-2 space-y-1">
                 <li>• Camouflaged personnel and equipment detection</li>

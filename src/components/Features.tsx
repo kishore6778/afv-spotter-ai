@@ -15,7 +15,7 @@ const features = [
   {
     icon: Brain,
     title: "AI-Powered Detection",
-    description: "Google Gemini vision AI analyzes each frame to identify vehicles, personnel, structures, and weapon systems."
+    description: "YOLOv8 deep learning model analyzes each frame to identify vehicles, personnel, structures, and weapon systems."
   },
   {
     icon: Layers,
