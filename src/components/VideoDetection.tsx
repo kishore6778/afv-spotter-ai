@@ -129,7 +129,7 @@ const VideoDetection = ({ onReportGenerated }: VideoDetectionProps) => {
     const video = videoRef.current;
     const totalDuration = video.duration;
     // Analyze every 2 seconds of video
-    const interval = 2;
+    const interval = 1;
     const totalFrames = Math.ceil(totalDuration / interval);
     const frameDetections: FrameDetection[] = [];
 
